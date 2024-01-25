@@ -1,0 +1,253 @@
+<html>
+<head>
+<title>Regresion Logistica.ipynb</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #8c8c8c; font-style: italic;}
+.s1 { color: #080808;}
+.s2 { color: #0033b3;}
+.s3 { color: #067d17;}
+.s4 { color: #1750eb;}
+.s5 { color: #0037a6;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Regresion Logistica.ipynb</font>
+</center></td></tr></table>
+<pre><span class="s0">#%% md 
+</span><span class="s1">####                                                 ¿Qué es la regresión logística? 
+              
+ 
+La regresión logística es una técnica de análisis de datos que utiliza las matemáticas para encontrar las relaciones entre dos factores de datos. Luego, utiliza esta relación para predecir el valor de uno de esos factores basándose en el otro. Normalmente, la predicción tiene un número finito de resultados, como un sí o un no. 
+ 
+Por ejemplo, supongamos que desea adivinar si el visitante de su sitio web va a hacer clic en el botón de pago de su carrito de compras o no. El análisis de regresión logística analiza el comportamiento de los visitantes anteriores, como el tiempo que permanecen en el sitio web y la cantidad de artículos que hay en el carrito. Determina que, si anteriormente los visitantes pasaban más de cinco minutos en el sitio y agregaban más de tres artículos al carrito, hacían clic en el botón de pago. Con esta información, la función de regresión logística puede predecir el comportamiento de un nuevo visitante en el sitio web. 
+ 
+####                              ¿Por qué es importante la regresión logística? 
+                               
+La regresión logística es una técnica importante en el campo de la inteligencia artificial y el machine learning (AI/ML). Los modelos de ML son programas de software que puede entrenar para realizar tareas complejas de procesamiento de datos sin intervención humana. Los modelos de ML creados mediante regresión logística ayudan a las organizaciones a obtener información procesable a partir de sus datos empresariales. Pueden usar esta información para el análisis predictivo a fin de reducir los costos operativos, aumentar la eficiencia y escalar más rápido. Por ejemplo, las empresas pueden descubrir patrones que mejoran la retención de los empleados o conducen a un diseño de productos más rentable. 
+ 
+####                               ¿Cuáles son las aplicaciones de la regresión logística? 
+                                
+### Fabricación 
+Las empresas de fabricación utilizan el análisis de regresión logística para estimar la probabilidad de fallo de las piezas en la maquinaria. Luego, planifican los programas de mantenimiento en función de esta estimación para minimizar los fallos futuros. 
+ 
+### Sanidad 
+Los investigadores médicos planifican la atención y el tratamiento preventivos mediante la predicción de la probabilidad de enfermedad en los pacientes. Utilizan modelos de regresión logística para comparar el impacto de los antecedentes familiares o los genes en las enfermedades.  
+ 
+### Finanzas  
+Las empresas financieras tienen que analizar las transacciones financieras en busca de fraudes y evaluar las solicitudes de préstamos y seguros en busca de riesgos. Estos problemas son adecuados para un modelo de regresión logística porque tienen resultados discretos, como alto riesgo o bajo riesgo y fraudulento o no fraudulento.   
+ 
+### Marketing 
+Las herramientas de publicidad en línea utilizan el modelo de regresión logística para predecir si los usuarios harán clic en un anuncio. Como resultado, los especialistas en marketing pueden analizar las respuestas de los usuarios a diferentes palabras e imágenes y crear anuncios de alto rendimiento con los que los clientes interactuarán. 
+ 
+ 
+###                   ¿Cómo funciona el análisis de regresión logística? 
+ 
+La regresión logística es una de las diferentes técnicas de análisis de regresión que los científicos de datos utilizan habitualmente en machine learning (ML). Para entender la regresión logística, primero debemos entender el análisis de regresión básica. A continuación, utilizamos un ejemplo de análisis de regresión lineal para demostrar cómo funciona el análisis de regresión. 
+ 
+ 
+### Aplicacion Real 
+Utilizaremos la regresión logística en el caso particular de una competencia de kaggle, de esta forma podremos darle un uso practico a la regresión logística. 
+ 
+ 
+                                 
+</span><span class="s0">#%% 
+# Primero importaremos la librería principal para poder utilizar el archivo CSV y verificamos los datos.</span>
+<span class="s2">import </span><span class="s1">pandas </span><span class="s2">as </span><span class="s1">pd</span>
+<span class="s1">datos = pd.read_csv(</span><span class="s3">&quot;train.csv&quot;</span><span class="s1">)</span>
+<span class="s1">datos</span>
+<span class="s0">#%% 
+# Miramos una pequeña descripción de los datos.</span>
+<span class="s1">datos.describe()</span>
+<span class="s0">#%% 
+# Importamos seaborn para graficar cuantas personas sobrevivieron.</span>
+<span class="s2">import </span><span class="s1">seaborn </span><span class="s2">as </span><span class="s1">sb</span>
+<span class="s1">sb.countplot(x=</span><span class="s3">'Survived'</span><span class="s1">, data=datos, hue=</span><span class="s3">'Survived'</span><span class="s1">)</span>
+<span class="s0">#%% 
+#Luego de graficar la superveniencia y la mortalidad, utilizamos la característica de sexo para separar por genero por medio de hue:””.</span>
+<span class="s2">import </span><span class="s1">seaborn </span><span class="s2">as </span><span class="s1">sb</span>
+<span class="s1">sb.countplot(x=</span><span class="s3">'Survived'</span><span class="s1">, data=datos ,hue=</span><span class="s3">'Sex'</span><span class="s1">)</span>
+<span class="s0">#%% 
+# Para verificar si hay datos vacíos o nulos usamos la función .isna()</span>
+<span class="s0"># Como isna() solo mostrara datos booleanos, usamos además el método sum() después de isna,</span>
+<span class="s0"># así datos.isna().sum()</span>
+<span class="s1">datos.isnull().sum()</span>
+<span class="s0">#%% 
+# Para verificar solo las columnas que tienen el inconveniente, creamos la matriz en datos [[]] y agregamos los nombres de cada columna.</span>
+<span class="s1">datos[[</span><span class="s3">&quot;Age&quot;</span><span class="s1">,</span><span class="s3">&quot;Embarked&quot;</span><span class="s1">,</span><span class="s3">&quot;Cabin&quot;</span><span class="s1">]].isna().sum()</span>
+<span class="s0">#%% 
+# Ya Sabemos que hay (177) datos de edad que no registran, por tal motivo será mejor </span>
+<span class="s0"># llenarlos con un promedio, hay (2) filas con Embarked vacías, también lo mejor será </span>
+<span class="s0"># eliminar del todo estos 2 registros y, por último, la columna de cabina puede que la descartemos </span>
+<span class="s0">#  y puede que no o, mejor dicho, es mejor volverla un booleano para que podamos utilizarla.</span>
+<span class="s1">datos[</span><span class="s3">&quot;CabinaTF&quot;</span><span class="s1">] = datos[</span><span class="s3">&quot;Cabin&quot;</span><span class="s1">].notna().astype(int)</span>
+<span class="s1">datos</span>
+<span class="s0">#%% 
+# Ahora desde este punto, realizaremos la verificación de otro conjunto de datos, </span>
+<span class="s0"># partiendo de la primicia de que hay una variable a tener en cuenta, </span>
+<span class="s0"># esta se da relacionando el estrato social de cada persona </span>
+<span class="s0"># (su clase social, para saber si es de primera segunda o tercera clase por medio </span>
+<span class="s0"># de su pase de abordaje: Pclass= 1 o 2 o 3), la columna &quot;Cabin&quot;, fue sustituida por &quot;CabinaTF&quot;</span>
+<span class="s1">datosTF = datos.drop([</span><span class="s3">&quot;Cabin&quot;</span><span class="s1">],axis=</span><span class="s4">1</span><span class="s1">)</span>
+<span class="s1">datosTF</span>
+<span class="s0">#%% 
+# De momento utilizaremos una la función isnull() más la función sum(), </span>
+<span class="s0"># para que nos regrese los datos vacíos nuevamente y realizamos una comparación </span>
+<span class="s0"># con los datos anteriores. </span>
+<span class="s1">datosTF.isnull().sum()</span>
+<span class="s0">#%% 
+# También realizaremos una nueva grafica para verificar la distribución de las edades. </span>
+<span class="s0"># Ya que debemos rellenar los datos nulos o vacíos con los datos promedio </span>
+<span class="s0"># para poder utilizar la columna datosTF[&quot;Age&quot;].</span>
+<span class="s1">sb.displot(x=</span><span class="s3">&quot;Age&quot;</span><span class="s1">, data=datosTF)</span>
+<span class="s0">#%% 
+# Utilizamos la propiedad .mean() para traer el promedio de los datos.</span>
+<span class="s1">datosTF[</span><span class="s3">&quot;Age&quot;</span><span class="s1">].mean()</span>
+<span class="s0">#%% 
+# El proceso para llenar los datos vacios es muy sencillo,</span>
+<span class="s0"># asi como existe dropna() para eliminar estos datos, </span>
+<span class="s0"># existe la funcion fillna() para llenar estos datos vacios. </span>
+<span class="s0"># Como esta funcion nos devuelve un nuevo set de datos,</span>
+<span class="s0"># lo que hacemos es guardar este set en una nueva variable (datosAge).</span>
+<span class="s1">datosAge = datosTF[</span><span class="s3">&quot;Age&quot;</span><span class="s1">].fillna(datosTF[</span><span class="s3">&quot;Age&quot;</span><span class="s1">].mean())</span>
+<span class="s1">datosAge</span>
+<span class="s0">#%% 
+# Utilizaremos esta variable (datosAge) para pasarla como argumento en fillna,</span>
+<span class="s0"># directamente en la columna [&quot;Age&quot;] del dataset original que estamos utilizando (datosTF),</span>
+<span class="s0"># al verificar los datos nuevamente veremos que</span>
+<span class="s0"># ya se encuentran los datos nulos sobrescribimos con el promedio.</span>
+<span class="s1">datosTF[</span><span class="s3">&quot;Age&quot;</span><span class="s1">]=datosTF[</span><span class="s3">&quot;Age&quot;</span><span class="s1">].fillna(datosAge)</span>
+<span class="s1">datosTF.isna().sum()</span>
+<span class="s0">#%% 
+# De momento solo nos queda eliminar las dos filas de datos que están vacías, </span>
+<span class="s0"># aquí podemos volver a utilizar nuestra función amiga dropna().</span>
+<span class="s1">datosTF = datosTF.dropna()</span>
+<span class="s1">datosTF.isnull().sum()</span>
+<span class="s0">#%% 
+# Aun debemos quitar algunas columnas irrelevantes para nuestro modelo y transformar</span>
+<span class="s0"># las cadenas de texto de male y female en datos numéricos, </span>
+<span class="s0"># pues no queremos que el modelo busque algún tipo de relación por ejemplo</span>
+<span class="s0"># con los nombres o con los ID de cada pasajero.</span>
+<span class="s1">datosTF = datosTF.drop([</span><span class="s3">&quot;Name&quot;</span><span class="s1">,</span><span class="s3">&quot;PassengerId&quot;</span><span class="s1">,</span><span class="s3">&quot;Ticket&quot;</span><span class="s1">],axis=</span><span class="s4">1</span><span class="s1">)</span>
+<span class="s1">datosTF</span>
+<span class="s0">#%% 
+# En esta sección de código transformaremos male o fémale en datos lógicos. </span>
+<span class="s0"># Utilizar get_dummies para realizar la codificación one-hot en la columna 'Sex'</span>
+
+<span class="s1">datosTF = pd.get_dummies(datosTF, columns=[</span><span class="s3">'Sex'</span><span class="s1">], drop_first=</span><span class="s2">True</span><span class="s1">)</span>
+<span class="s1">datosTF</span>
+<span class="s0">#%% 
+# Cambiamos nuestros datos true o false por 1 y 0, y solo nos faltaría </span>
+<span class="s0"># verificar que tan relevante es la columna (Embarked).</span>
+<span class="s1">datosTF[</span><span class="s3">'Sex_male'</span><span class="s1">] = datosTF[</span><span class="s3">'Sex_male'</span><span class="s1">].astype(int)</span>
+<span class="s1">datosTF</span>
+<span class="s0">#%% 
+# Como la información se encuentra baste balanceada, y quizás no </span>
+<span class="s0"># podamos encontrar una relación donde la gente más adinerada o </span>
+<span class="s0"># con pase de primera clase abordo, realizaremos 2 histogramas.</span>
+<span class="s1">sb.countplot(x=</span><span class="s3">&quot;Survived&quot;</span><span class="s1">,data=datosTF,hue=</span><span class="s3">&quot;Embarked&quot;</span><span class="s1">)</span>
+<span class="s0">#%% 
+# Creamos un histograma comparativo donde podemos verificar las muertes de las personas</span>
+<span class="s0"># con relación a la clase de su pase de abordaje.</span>
+<span class="s1">ax = sb.countplot(x=</span><span class="s3">&quot;Survived&quot;</span><span class="s1">, data=datosTF, hue=</span><span class="s3">&quot;Pclass&quot;</span><span class="s1">)</span>
+<span class="s2">for </span><span class="s1">p </span><span class="s2">in </span><span class="s1">ax.patches:</span>
+    <span class="s1">ax.annotate(</span><span class="s3">f'</span><span class="s5">{</span><span class="s1">p.get_height()</span><span class="s5">}</span><span class="s3">'</span><span class="s1">, (p.get_x() + p.get_width() / </span><span class="s4">2</span><span class="s1">, p.get_height()), ha=</span><span class="s3">'center'</span><span class="s1">, va=</span><span class="s3">'center'</span><span class="s1">, xytext=(</span><span class="s4">0</span><span class="s1">, </span><span class="s4">10</span><span class="s1">), textcoords=</span><span class="s3">'offset points'</span><span class="s1">)</span>
+<span class="s0">#%% 
+# Procederemos a usar los dumies para poder utilizarlos en nuestro modelo.</span>
+<span class="s1">enbarketDumies = pd.get_dummies(datosTF[</span><span class="s3">&quot;Embarked&quot;</span><span class="s1">], dtype = int)</span>
+<span class="s1">enbarketDumies</span>
+<span class="s0">#%% 
+# Ahora eliminaremos la fila Embarket de nuestro set de datos final.</span>
+<span class="s1">datosTF = datosTF.drop(columns=[</span><span class="s3">'Embarked'</span><span class="s1">])</span>
+<span class="s1">datosTF</span>
+<span class="s0">#%% 
+# Por ultimo y para dejar nuestro set de datos totalmente listo para el entrenamiento del modelo,</span>
+<span class="s0"># unimos los dumies.</span>
+<span class="s1">datosTF = datosTF.join(enbarketDumies)</span>
+<span class="s1">datosTF</span>
+<span class="s0">#%% 
+# En este momento podemos crear un heatmap para verificar la correlación de los datos.</span>
+<span class="s1">sb.set(rc={</span><span class="s3">&quot;figure.figsize&quot;</span><span class="s1">:(</span><span class="s4">18</span><span class="s1">,</span><span class="s4">10</span><span class="s1">)})</span>
+<span class="s1">sb.heatmap(datosTF.corr(), annot=</span><span class="s2">True</span><span class="s1">, cmap=</span><span class="s3">&quot;YlGnBu&quot;</span><span class="s1">)</span>
+<span class="s0">#%% 
+# En este espacio, separaremos los datos.</span>
+<span class="s0"># En el eje X, dejamos todos los datos eliminando la columna [&quot;Survived&quot;].</span>
+<span class="s0"># En el eje Y, solamente dejamos la columna [&quot;Survived&quot;].</span>
+<span class="s1">x=datosTF.drop([</span><span class="s3">&quot;Survived&quot;</span><span class="s1">], axis=</span><span class="s4">1</span><span class="s1">)</span>
+<span class="s1">y=datosTF[</span><span class="s3">&quot;Survived&quot;</span><span class="s1">]</span>
+<span class="s0">#%% 
+# Desde Sklearn importamos train_test_split para dividir los datos en 2</span>
+<span class="s0"># Los datos que seran para entrenar el modelo y los datos para realizar la prueba.</span>
+<span class="s2">from </span><span class="s1">sklearn.model_selection </span><span class="s2">import </span><span class="s1">train_test_split</span>
+<span class="s1">X_ent, X_pru, y_ent, y_pru = train_test_split(x, y, test_size=</span><span class="s4">0.2</span><span class="s1">)</span>
+<span class="s0">#%% 
+# Nuevamente desde Sklearn importaremos la función LogisticRegression.</span>
+<span class="s0"># Crearemos nuestro modelo</span>
+<span class="s0"># Le especificamos a nuestro modelo que de un máximo de 1000 iteraciones.</span>
+<span class="s2">from </span><span class="s1">sklearn.linear_model </span><span class="s2">import </span><span class="s1">LogisticRegression</span>
+<span class="s1">modelo = LogisticRegression(max_iter=</span><span class="s4">1000</span><span class="s1">)</span>
+<span class="s1">modelo.fit(X_ent,y_ent)</span>
+<span class="s0">#%% 
+# Ahora usamos nuestro conjunto de datos X de pruebas y lo guardamos en predicciones.</span>
+<span class="s1">predicciones = modelo.predict(X_pru)</span>
+<span class="s0">#%% 
+# Ahora podemos verificar como le fue a nuestro modelo,</span>
+<span class="s0"># Si quedo bien entrenado o no.</span>
+<span class="s2">from </span><span class="s1">sklearn.metrics </span><span class="s2">import </span><span class="s1">accuracy_score</span>
+<span class="s1">accuracy_score(y_pru, predicciones)</span>
+<span class="s0">#%% 
+# Podemos revisar algunas otras metricas</span>
+<span class="s2">from </span><span class="s1">sklearn.metrics </span><span class="s2">import </span><span class="s1">classification_report</span>
+<span class="s1">print(classification_report(y_pru, predicciones))</span>
+<span class="s0">#%% 
+# Esta matriz de confusiones, nos dará la claridad del porque tenemos varias métricas.</span>
+<span class="s0"># Puede que por sí solo nos dé un arreglo que no nos dice mucho.</span>
+<span class="s2">from </span><span class="s1">sklearn.metrics </span><span class="s2">import </span><span class="s1">confusion_matrix</span>
+<span class="s1">cm=confusion_matrix(y_pru, predicciones)</span>
+<span class="s1">cm</span>
+<span class="s0">#%% 
+# Podemos mejorarlo un poco, agregándolo a un dataframe de pandas con columnas he índices.</span>
+<span class="s1">pd.DataFrame(cm, columns=[</span><span class="s3">&quot;Predi : No&quot;</span><span class="s1">, </span><span class="s3">&quot;Predi : Si&quot;</span><span class="s1">], index=[</span><span class="s3">&quot;Real : No&quot;</span><span class="s1">, </span><span class="s3">&quot;Real : Si&quot;</span><span class="s1">])</span>
+<span class="s0">#%% md 
+ </span><span class="s1">En la célula del código anterior el modelo predijo 118 veces que la persona no sobreviviría, y en 106 veces de esas 118 acertó, el modelo también predijo 60 veces que la persona si sobreviviría, y acertó en 42 de esas 60 veces, podemos decir que este modelo quedo bien entrenado, tal como lo vimos en el Score, donde obtuvo un valioso 81% de entrenamiento positivo. 
+  
+Nuestro último paso será crear una persona ficticia, probablemente podemos utilizar nuestros propios datos para verificar el modelo puede predecir si hubiéramos sobrevivido o si hubiésemos fallecido en el accidente.  
+</span><span class="s0">#%% 
+# Revisamos el cabecero de los datos para tener una referencia y poder </span>
+<span class="s0"># colocar nuestros propios datos.</span>
+<span class="s1">x.head()</span>
+<span class="s0">#%% 
+# Ahora teniendo estas referencias, crearemos nuestro personaje ficticio</span>
+<span class="s0"># con los datos reales o inventados.</span>
+<span class="s0"># Ahora es donde podemos jugar con la información y comportamiento del modelo.</span>
+<span class="s1">jhojanAdarme = [</span><span class="s4">3</span><span class="s1">,</span><span class="s4">31</span><span class="s1">,</span><span class="s4">0</span><span class="s1">,</span><span class="s4">0</span><span class="s1">,</span><span class="s4">10</span><span class="s1">,</span><span class="s4">1</span><span class="s1">,</span><span class="s4">1</span><span class="s1">,</span><span class="s4">0</span><span class="s1">,</span><span class="s4">0</span><span class="s1">,</span><span class="s4">1</span><span class="s1">]</span>
+<span class="s1">prediccionJA = modelo.predict([jhojanAdarme])</span>
+<span class="s2">if </span><span class="s1">prediccionJA[</span><span class="s4">0</span><span class="s1">] ==</span><span class="s4">1</span><span class="s1">:</span>
+    <span class="s1">print(</span><span class="s3">&quot;Sobreviviste&quot;</span><span class="s1">)</span>
+<span class="s2">else</span><span class="s1">:</span>
+    <span class="s1">print(</span><span class="s3">&quot;No sobreviviste&quot;</span><span class="s1">)</span>
+<span class="s0">#%% 
+# Intentemoslo una vez mas, pero como si fueramos alguien que se permite pagar</span>
+<span class="s0"># primera clase, un valor alto y una cabina.</span>
+<span class="s1">ElonMusk = [</span><span class="s4">1</span><span class="s1">,</span><span class="s4">40</span><span class="s1">,</span><span class="s4">0</span><span class="s1">,</span><span class="s4">0</span><span class="s1">,</span><span class="s4">80.28</span><span class="s1">,</span><span class="s4">1</span><span class="s1">,</span><span class="s4">1</span><span class="s1">,</span><span class="s4">0</span><span class="s1">,</span><span class="s4">1</span><span class="s1">,</span><span class="s4">0</span><span class="s1">]</span>
+<span class="s1">prediccionEl = modelo.predict([ElonMusk])</span>
+<span class="s2">if </span><span class="s1">prediccionEl[</span><span class="s4">0</span><span class="s1">] ==</span><span class="s4">1</span><span class="s1">:</span>
+    <span class="s1">print(</span><span class="s3">&quot;Sobreviviste&quot;</span><span class="s1">)</span>
+<span class="s2">else</span><span class="s1">:</span>
+    <span class="s1">print(</span><span class="s3">&quot;No sobreviviste&quot;</span><span class="s1">)</span>
+
+<span class="s0">#%% md 
+</span><span class="s1">###                  Conclusiones 
+ 
+Gracias a esta información y sus relaciones, podemos concluir, que por lo menos los pasajeros de primera clase eran el grupo más pequeño de personas a bordo, aun así, fue el grupo que tuvo más sobrevivientes. 
+ 
+La primera clase presento una mortalidad del 37.5% de sus ocupantes 
+ 
+La segunda clase presento una mortalidad del 53% de sus ocupantes 
+ 
+la desafortunada tercera clase presento una mortalidad del 76% de sus ocupantes</span></pre>
+</body>
+</html>
